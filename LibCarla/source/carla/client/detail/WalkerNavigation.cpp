@@ -25,6 +25,8 @@ namespace detail {
     auto files = _client.GetRequiredFiles("Nav");
     if (!files.empty()) {
       _nav.Load(_client.GetCacheFile(files[0]));
+      std::vector<geom::Transform> points = _client.GetMapInfo().walker_spawn_points;
+      _nav.SetWalkerPoints(points);
     }
   }
 
@@ -57,8 +59,8 @@ namespace detail {
         commands.emplace_back(Cmd::ApplyWalkerState{ handle.walker, trans, speed });
       }
     }
-
     _client.ApplyBatchSync(std::move(commands), false);
+
   }
 
   void WalkerNavigation::CheckIfWalkerExist(std::vector<WalkerHandle> walkers, const EpisodeState &state) {

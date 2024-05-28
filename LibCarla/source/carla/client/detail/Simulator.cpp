@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Computer Vision Center (CVC) at the Universitat Autonoma
 // de Barcelona (UAB).
+// AUROVA
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
@@ -29,7 +30,7 @@ namespace carla {
 namespace client {
 namespace detail {
 
-  // ===========================================================================
+   // ===========================================================================
   // -- Static local methods ---------------------------------------------------
   // ===========================================================================
 
@@ -176,6 +177,9 @@ namespace detail {
     return _cached_map;
   }
 
+  rpc::MapInfo Simulator::GetMapInfo() {
+    return _client.GetMapInfo();
+  }
   // ===========================================================================
   // -- Required files ---------------------------------------------------------
   // ===========================================================================
@@ -281,7 +285,7 @@ namespace detail {
   // -- AI ---------------------------------------------------------------------
   // ===========================================================================
 
-  void Simulator::RegisterAIController(const WalkerAIController &controller) {
+void Simulator::RegisterAIController(const WalkerAIController &controller) {
     auto walker = controller.GetParent();
     if (walker == nullptr) {
       throw_exception(std::runtime_error(controller.GetDisplayId() + ": not attached to walker"));

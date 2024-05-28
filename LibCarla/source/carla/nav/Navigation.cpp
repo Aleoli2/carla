@@ -1,6 +1,6 @@
 // Copyright (c) 2019 Computer Vision Center (CVC) at the Universitat Autonoma
 // de Barcelona (UAB).
-//
+//AUROVA
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
@@ -65,7 +65,9 @@ namespace nav {
     dtFreeCrowd(_crowd);
     dtFreeNavMeshQuery(_nav_query);
     dtFreeNavMesh(_nav_mesh);
+    generator= std::mt19937(std::random_device{}());
   }
+
 
   // set the seed to use with random numbers
   void Navigation::SetSeed(unsigned int seed) {
@@ -536,7 +538,7 @@ namespace nav {
     DEBUG_ASSERT(_crowd != nullptr);
 
     // get the bounding box extension plus some space around
-    float marge = 0.8f;
+    float marge = 0.0f;
     float hx = vehicle.bounding.extent.x + marge;
     float hy = vehicle.bounding.extent.y + marge;
     // define the 4 corners of the bounding box
@@ -862,6 +864,7 @@ namespace nav {
         std::lock_guard<std::mutex> lock(_mutex);
         ag = _crowd->getAgent(i);
       }
+
       if (!ag->active || ag->paused) {
         continue;
       }
@@ -897,9 +900,9 @@ namespace nav {
               }
             }
             // set a new random target
-            carla::geom::Location location;
-            GetRandomLocation(location, nullptr);
-            _walker_manager.SetWalkerRoute(_mapped_by_index[i], location);
+            carla::geom::Location location(0,0,0);
+            if( GetSpawnRandomLocation(location)) 
+              _walker_manager.SetWalkerRoute(_mapped_by_index[i], location);
           }
         }
       }
@@ -1050,9 +1053,17 @@ namespace nav {
     agent->vel[2]);
   }
 
+  bool Navigation::GetSpawnRandomLocation(carla::geom::Location &location){
+
+    if (spawn_points.size()>0) {
+      std::uniform_int_distribution<std::size_t> distribution(0, spawn_points.size() - 1);
+      location = spawn_points[distribution(generator)].location;
+      return true;
+    }
+    return false;   
+  }
   // get a random location for navigation
   bool Navigation::GetRandomLocation(carla::geom::Location &location, dtQueryFilter * filter) const {
-
     // check if all is ready
     if (!_ready) {
       return false;
@@ -1201,6 +1212,10 @@ namespace nav {
     agent->dvel[1] = z;
 
     return true;
+  }
+  
+  void Navigation::SetWalkerPoints(std::vector<carla::geom::Transform> &points){
+    this->spawn_points = points;
   }
 
 } // namespace nav

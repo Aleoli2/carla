@@ -5,7 +5,14 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "carla/nav/WalkerManager.h"
+
+#include "carla/Logging.h"
+#include "carla/client/ActorSnapshot.h"
+#include "carla/client/Waypoint.h"
+#include "carla/client/World.h"
+#include "carla/client/detail/Simulator.h"
 #include "carla/nav/Navigation.h"
+#include "carla/rpc/Actor.h"
 
 namespace carla {
 namespace nav {
@@ -99,11 +106,13 @@ namespace nav {
             return false;
 
         // set a new random target
-        carla::geom::Location location;
-        _nav->GetRandomLocation(location, nullptr);
+        carla::geom::Location location(0,0,0);
 
         // set the route
-        return SetWalkerRoute(id, location);
+        if(_nav->GetSpawnRandomLocation(location)) 
+            return SetWalkerRoute(id, location);
+        else
+            return false;
     }
 
 	// set a new route from its current position
@@ -136,6 +145,9 @@ namespace nav {
         info.route.reserve(path.size());
         unsigned char previous_area = CARLA_AREA_SIDEWALK;
         for (unsigned int i=0; i<path.size(); ++i) {
+            // Don't take into account the area (custom)
+            info.route.emplace_back(WalkerEventIgnore(), std::move(path[i]), area[i]);
+            continue;
             // get the type
             switch (area[i]) {
                 // do nothing

@@ -419,6 +419,11 @@ void ACarlaGameModeBase::StoreSpawnPoints()
     SpawnPointsTransforms.Add(It->GetActorTransform());
   }
 
+  for (TActorIterator<AWalkerSpawnPoint> It(GetWorld()); It; ++It)
+  {
+    WalkerSpawnPointsTransforms.Add(It->GetActorTransform());
+  }
+
   if(SpawnPointsTransforms.Num() == 0)
   {
     GenerateSpawnPoints();

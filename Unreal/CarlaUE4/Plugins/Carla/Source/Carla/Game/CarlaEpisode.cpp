@@ -16,6 +16,7 @@
 #include "Carla/Util/BoundingBoxCalculator.h"
 #include "Carla/Util/RandomEngine.h"
 #include "Carla/Vehicle/VehicleSpawnPoint.h"
+#include "Carla/Walker/WalkerSpawnPoint.h"
 #include "Carla/Game/CarlaStatics.h"
 #include "Carla/MapGen/LargeMapManager.h"
 
@@ -241,6 +242,13 @@ TArray<FTransform> UCarlaEpisode::GetRecommendedSpawnPoints() const
   ACarlaGameModeBase *GM = UCarlaStatics::GetGameMode(GetWorld());
 
   return GM->GetSpawnPointsTransforms();
+}
+
+TArray<FTransform> UCarlaEpisode::GetWalkerSpawnPoints() const
+{
+  ACarlaGameModeBase *GM = UCarlaStatics::GetGameMode(GetWorld());
+
+  return GM->GetWalkerSpawnPointsTransforms();
 }
 
 carla::rpc::Actor UCarlaEpisode::SerializeActor(FCarlaActor *CarlaActor) const

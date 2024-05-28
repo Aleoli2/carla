@@ -129,6 +129,10 @@ public:
   UFUNCTION(BlueprintCallable)
   TArray<FTransform> GetRecommendedSpawnPoints() const;
 
+  /// Return the list of recommended spawn points for walkers.
+  UFUNCTION(BlueprintCallable)
+  TArray<FTransform> GetWalkerSpawnPoints() const;
+
   /// Return the GeoLocation point of the map loaded
   const carla::geom::GeoLocation &GetGeoReference() const
   {

@@ -721,6 +721,7 @@ namespace detail {
 
     std::vector<std::string> GetNamesOfAllObjects() const;
 
+    rpc::MapInfo GetMapInfo();
     /// @}
 
   private:

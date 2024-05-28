@@ -20,9 +20,9 @@ namespace rpc {
 
     std::string name;
 
-    std::vector<geom::Transform> recommended_spawn_points;
+    std::vector<geom::Transform> recommended_spawn_points, walker_spawn_points;
 
-    MSGPACK_DEFINE_ARRAY(name, recommended_spawn_points);
+    MSGPACK_DEFINE_ARRAY(name, recommended_spawn_points,walker_spawn_points);
   };
 
 } // namespace rpc

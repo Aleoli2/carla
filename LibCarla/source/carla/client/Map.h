@@ -51,6 +51,10 @@ namespace client {
       return _description.recommended_spawn_points;
     }
 
+    const std::vector<geom::Transform> &GetWalkerSpawnPoints() const {
+      return _description.walker_spawn_points;
+    }
+
     SharedPtr<Waypoint> GetWaypoint(
         const geom::Location &location,
         bool project_to_road = true,

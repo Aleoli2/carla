@@ -19,6 +19,7 @@
 #include <recast/DetourNavMeshBuilder.h>
 #include <recast/DetourNavMeshQuery.h>
 #include <recast/DetourCommon.h>
+#include <random>
 
 namespace carla {
 namespace nav {
@@ -100,6 +101,8 @@ namespace nav {
     void UpdateCrowd(const client::detail::EpisodeState &state);
     /// get a random location for navigation
     bool GetRandomLocation(carla::geom::Location &location, dtQueryFilter * filter = nullptr) const;
+    /// get a random walker spawn location
+    bool GetSpawnRandomLocation(carla::geom::Location &location); 
     /// set the probability that an agent could cross the roads in its path following
     void SetPedestriansCrossFactor(float percentage);
     /// set an agent as paused for the crowd
@@ -108,6 +111,8 @@ namespace nav {
     bool HasVehicleNear(ActorId id, float distance, carla::geom::Location direction);
     /// make agent look at some location
     bool SetWalkerLookAt(ActorId id, carla::geom::Location location);
+    /// set the walker spawn points
+    void SetWalkerPoints(std::vector<carla::geom::Transform> &points);
 
     dtCrowd *GetCrowd() { return _crowd; };
 
@@ -119,6 +124,7 @@ namespace nav {
     bool _ready { false };
     std::vector<uint8_t> _binary_mesh;
     double _delta_seconds { 0.0 };
+    std::vector<carla::geom::Transform> spawn_points;
     /// meshes
     dtNavMesh *_nav_mesh { nullptr };
     dtNavMeshQuery *_nav_query { nullptr };
@@ -137,7 +143,8 @@ namespace nav {
 
     /// walker manager for the route planning with events
     WalkerManager _walker_manager;
-
+    std::mt19937 generator;
+    
     mutable std::mutex _mutex;
 
     float _probability_crossing { 0.0f };

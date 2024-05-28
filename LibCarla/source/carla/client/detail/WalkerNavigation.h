@@ -10,7 +10,6 @@
 #include "carla/nav/Navigation.h"
 #include "carla/NonCopyable.h"
 #include "carla/client/Timestamp.h"
-#include "carla/client/detail/EpisodeProxy.h"
 #include "carla/rpc/ActorId.h"
 
 #include <memory>
@@ -63,9 +62,9 @@ namespace detail {
 
     // Get Random location in nav mesh
     boost::optional<geom::Location> GetRandomLocation() {
-      geom::Location random_location(0, 0, 0);
-      if (_nav.GetRandomLocation(random_location))
-        return boost::optional<geom::Location>(random_location);
+      geom::Location location(0,0,0);
+      if (_nav.GetSpawnRandomLocation(location)) 
+        return boost::optional<geom::Location>(location);
       else
         return {};
     }
