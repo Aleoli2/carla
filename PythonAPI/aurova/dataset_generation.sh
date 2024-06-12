@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Generation of the dataset automatically. Launch the CARLA simulator and load the desired town. 
+# Generation of the dataset automatically. Launch the CARLA simulator and load the respective town. 
 # Set the outpur directory in the variable output_dir and check that folders "train" and "val" exist in that folder.
 # For generating the data for other town, firstly load it in CARLA and then uncomment the respective lines.
-# It is possible to resume the generation from a town setting the desired start route with start_train and start_val.
+# It is possible to resume the generation from a town setting the respective start route with start_train and start_val.
 
 # Function to handle interruption
 function handle_interrupt {
@@ -18,7 +18,7 @@ function handle_interrupt {
 start_train=0
 start_val=0
 
-wait_launch=14
+wait_launch=17
 wait=5
 output_dir=/home/alolivas/aurova-lab/labrobotica/dataset/CARLA_dataset
 
@@ -113,17 +113,19 @@ do
   pid1=$!
 
   sleep $wait_launch
+  python change_weather.py --weather "${weather_train[$i]}"
   #Spawn pedestrians
   python pedestrians_fixed_routes.py &> /dev/null &
   pid2=$!
 
   sleep $wait
   #Record data
-  python record_ros_data.py
+  python record_ros_data.py &
+  pid3=$!
 
   sleep $wait
   #Publish message for starting moving
-rostopic pub /move_base_simple/goal --once geometry_msgs/PoseStamped "header:
+rostopic pub --once /move_base_simple/goal geometry_msgs/PoseStamped "header:
   seq: 0
   stamp:
     secs: 0
@@ -145,7 +147,7 @@ pose:
 
   sleep $wait
 
-  kill -s SIGINT $pid1
+  kill -s SIGINT $pid1 $pid3
 
   wait
 done
@@ -164,13 +166,15 @@ do
 
   sleep $wait_launch
   #Spawn pedestrians
+  python change_weather.py --weather "${weather_val[$i]}"
   python pedestrians_fixed_routes.py  &
   pid2=$!
 
   #Record data
-  python record_ros_data.py
+  python record_ros_data.py &
+  pid3=$!
 
-  sleep $wait_launch
+  sleep $wait
   #Publish message for starting moving
 rostopic pub /move_base_simple/goal --once geometry_msgs/PoseStamped "header:
   seq: 0
@@ -194,7 +198,7 @@ pose:
 
   sleep $wait_launch
 
-  kill -s SIGINT $pid1
+  kill -s SIGINT $pid1 $pid3
 
   wait
   

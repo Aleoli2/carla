@@ -9,6 +9,8 @@ PEDESTRIANS_ROUTES_FILE = os.getenv("PEDESTRIAN_ROUTES")
 if PEDESTRIANS_ROUTES_FILE is None: PEDESTRIANS_ROUTES_FILE="routes/pedestrian_routes/Town02_evaluation1.xml"
 WAY_ID = int(os.getenv("CARLA_WAY"))
 if WAY_ID is None: WAY_ID = 1 #None first way. The robot starts in the first node of the way.
+PATH_RESULTS = os.getenv("CARLA_RESULTS_PATH")
+if PATH_RESULTS is None: PATH_RESULTS ="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/results_metrics/"
 
 PENALTY_COLLISION_SLIGHT=0.9
 PENALTY_COLLISION_STATIC=0.65
@@ -18,7 +20,7 @@ TIME_DISTANCE_COEFFICIENT = 3 #Coefficient for determining the max trajectory ti
 MAX_TIME_LOCAL_MINIMUM = 30 #Seconds
 MINIMUM_DISTANCE = 3.0
 DISTANCE2PEDESTRIAN = 1.0 #Distance to the pedestrian in the direction of movement to consider that it has been avoided.
-PATH_RESULTS ="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/results_metrics/"
+
 
 #Ackermann control configuration
 MAX_SPEED=1.3 # m/s
