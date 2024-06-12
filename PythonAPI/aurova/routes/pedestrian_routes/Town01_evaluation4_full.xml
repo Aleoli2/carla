@@ -114,5 +114,29 @@
             </way>
         </pedestrian>
 
+        <apparition>
+            <node id="0" pose_x="61" pose_y="0" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="24" pose_y="0" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="20" pose_y="0" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="0" pose_y="36" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="0" pose_y="82" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="0" pose_y="90" pose_z="1"/>
+        </apparition>
+
     </pedestrians>
 </root>

@@ -434,5 +434,50 @@
             </way>
         </pedestrian>
 
+
+        <apparition>
+            <node id="0" pose_x="257" pose_y="-270" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="313" pose_y="-260" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="313" pose_y="-265" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="303" pose_y="-300" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="280" pose_y="-309" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="270" pose_y="-309" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="260" pose_y="-309" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="242" pose_y="-175" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="220" pose_y="-175" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="206" pose_y="-185" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="206" pose_y="-205" pose_z="1"/>
+        </apparition>
+
     </pedestrians>
 </root>

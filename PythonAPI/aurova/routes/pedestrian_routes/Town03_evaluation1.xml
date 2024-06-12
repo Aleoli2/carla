@@ -95,18 +95,5 @@
         </pedestrian>    
 
 
-        <apparition>
-            <node id="0" pose_x="72" pose_y="74" pose_z="1"/>
-        </apparition>
-
-        <apparition>
-            <node id="0" pose_x="82" pose_y="73" pose_z="1"/>
-        </apparition>
-
-        <apparition>
-            <node id="0" pose_x="100" pose_y="60" pose_z="1"/>
-        </apparition>
-
-
     </pedestrians>
 </root>

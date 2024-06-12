@@ -9,7 +9,7 @@
     <node id="5" pose_x="41" pose_y="-9" />
     <node id="6" pose_x="29" pose_y="0" /> 
     <node id="7" pose_x="153" pose_y="0" />
-    <node id="8" pose_x="153" pose_y="-96" yaw="-90.0"/>
+    <node id="8" pose_x="153" pose_y="-96" yaw="270.0"/>
     <node id="9" pose_x="148" pose_y="-118" />
     <node id="10" pose_x="137" pose_y="-129" />
     <node id="11" pose_x="114" pose_y="-141" />

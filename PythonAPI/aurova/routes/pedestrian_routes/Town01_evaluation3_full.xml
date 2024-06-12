@@ -70,5 +70,18 @@
             </way>
         </pedestrian>
 
+
+        <apparition>
+            <node id="0" pose_x="100" pose_y="0" pose_z="1"/>
+        </apparition>
+
+         <apparition>
+            <node id="0" pose_x="123" pose_y="0" pose_z="1"/>
+        </apparition>
+
+         <apparition>
+            <node id="0" pose_x="143" pose_y="0" pose_z="1"/>
+        </apparition>
+
     </pedestrians>
 </root>

@@ -311,5 +311,29 @@
         </pedestrian>
 
 
+        
+        <apparition>
+            <node id="0" pose_x="44" pose_y="216" pose_z="1"/>
+        </apparition> 
+        
+        <apparition>
+            <node id="0" pose_x="134" pose_y="225" pose_z="1"/>
+        </apparition> 
+        
+        <apparition>
+            <node id="0" pose_x="134" pose_y="213" pose_z="1"/>
+        </apparition> 
+        
+        <apparition>
+            <node id="0" pose_x="134" pose_y="201" pose_z="1"/>
+        </apparition>
+        
+        <apparition>
+            <node id="0" pose_x="164" pose_y="190" pose_z="1"/>
+        </apparition>
+        
+        <apparition>
+            <node id="0" pose_x="189" pose_y="227" pose_z="1"/>
+        </apparition>
     </pedestrians>
 </root>

@@ -92,5 +92,18 @@
             </way>
         </pedestrian>
 
+
+        <apparition>
+            <node id="0" pose_x="90" pose_y="73" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="90" pose_y="122" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="103" pose_y="131" pose_z="1"/>
+        </apparition>
+
     </pedestrians>
 </root>

@@ -255,5 +255,21 @@
             </way>
         </pedestrian>
 
+        <apparition>
+            <node id="0" pose_x="90" pose_y="30" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="118" pose_y="55" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="155" pose_y="33" pose_z="1"/>
+        </apparition>
+
+        <apparition>
+            <node id="0" pose_x="122" pose_y="0" pose_z="1"/>
+        </apparition>
+
     </pedestrians>
 </root>
