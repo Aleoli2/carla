@@ -13,8 +13,8 @@ function handle_interrupt {
 
 start_test=0
 wait_launch=14
-output=Ztransfuser
-architecture=transfuser
+output=thinktwice
+architecture=thinktwice
 pedestrian_routes_prefix=routes/pedestrian_routes/
 
 #Town01
@@ -44,7 +44,7 @@ do
 
     # Execute the python files
     if [ "$architecture" = "ROS" ]; then
-        map=/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town05.xml
+        map=/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town01.xml
         roslaunch app_old nav_carla.launch map:=$map way:=${way_id[$i]} &
         pid1=$!
 

@@ -287,7 +287,7 @@ def main():
                             all_actors[i*2+1].set_bones(inactive_bones[i])
                             all_actors[i*2+1].show_pose()
                             active_walkers[i]=False
-                            if evaluator is not None: evaluator.pedestrian_traj_eval(i,loc_walker)
+                            if evaluator is not None: evaluator.pedestrian_traj_eval(all_actors[i*2+1].id,loc_walker)
                         else:
                             all_actors[i*2].go_to_location(routes[i][current_target[i]]["pos"].location)
                 else:
@@ -311,8 +311,8 @@ def main():
                             all_actors[i*2].set_max_speed(float(walker_speed[i]))
                             active_walkers[i]=True
                             if evaluator is not None: 
-                                evaluator.init_pedestrian_traj(i,loc_walker,float(walker_speed[i]))
-                                evaluator.init_robot_traj(i,loc_walker,routes[i][current_target[i]]["pos"].location)
+                                evaluator.init_pedestrian_traj(all_actors[i*2+1].id,loc_walker,float(walker_speed[i]))
+                                evaluator.init_robot_traj(all_actors[i*2+1].id,loc_walker,routes[i][current_target[i]]["pos"].location)
             
             #Manage apparitions
             if not TEST_ROUTES:
@@ -329,7 +329,7 @@ def main():
                                                             carla.Rotation(0,robot.get_transform().rotation.yaw+180,0)) ) 
                                 apparition_actors.append(actor)
                                 active_apparitions[i]=True
-                                if evaluator is not None:  evaluator.init_robot_traj(-i,carla.Location(*apparition_location))
+                                if evaluator is not None:  evaluator.init_robot_traj(actor.id,carla.Location(*apparition_location))
                             except Exception as e:
                                 print(e)
 

@@ -224,7 +224,7 @@ class World(object):
         # self.sematic_camera=SemanticCamera(self.player)
         if self._architecture=="transfuser" or self._architecture=="thinktwice":
             self.lidar_sensor=LidarSensor(self.player,self.hud)
-        if self._architecture=="aurova":
+        if self._architecture=="aurova" or self._architecture=="thinktwice":
             self.depth_camera=Depthcamera(self.player, self.hud)
         actor_type = get_actor_display_name(self.player)
         self.goal_polar=None
@@ -236,17 +236,19 @@ class World(object):
             self.world.wait_for_tick()
 
     def record_video(self):
-        image=self.camera_manager._image.swapaxes(0, 1)
-        image=cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        camera=self.camera_manager._image.swapaxes(0, 1)
+        camera=cv2.cvtColor(camera, cv2.COLOR_BGR2RGB)
         
         image360=cv2.resize(self.rgb_camera._image, dsize=(128,self.hud.dim[0])).swapaxes(0, 1)
         image360=cv2.cvtColor(np.float32(image360), cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (image.shape[1],image.shape[0]+128))
-        image[-128:]=image360
+
+        image = np.zeros((camera.shape[0]+256,camera.shape[1],3), np.uint8)
+        image[0:-256]=camera
+        image[-256:-128]=image360
         if self.semantic is not None:
-            semantic=cv2.resize(self.semantic, dsize=(int(image.shape[1]/2),64)) 
+            semantic=cv2.resize(self.semantic, dsize=(image.shape[1],128)) 
             semantic=cv2.cvtColor(semantic, cv2.COLOR_BGR2RGB)
-            image[-192:-128,int(image.shape[1]/4):int(3*image.shape[1]/4)]=semantic
+            image[-128:]=semantic
 
         # Create a black image 
         size = (320,320,3)
@@ -260,7 +262,7 @@ class World(object):
                 cv2.circle(img,center,4,(int(255*alpha),0,int(255*(1-alpha))),-1)
                 alpha-=0.2
         if self.info is not None:
-            cv2.putText(img, "Speed: {:.2f}, Steer: {:.2f}".format(self.info[0], self.info[1]), (2,300), cv2.FONT_HERSHEY_SIMPLEX, 0.70, (255,255,255))
+            cv2.putText(img, "Speed: {:.2f}, Steer: {:.2f}".format(self.info[0], self.info[1]), (2,300), cv2.FONT_HERSHEY_TRIPLEX, 0.7, (255,255,255))
         
         image[:320,-320:]=img
         self.video.write(image)
@@ -908,13 +910,8 @@ def game_loop(args):
         publisher = context.socket(zmq.PUB)
         publisher.setsockopt(zmq.LINGER, 500)
         socket_sub = context.socket(zmq.SUB)
-        if args.remote:
-            # Connection to remote server. For using other server, configure the function with your ssh connection.
-            zmq.ssh.tunnel_connection(publisher, "tcp://127.0.0.1:5556", "allen")
-            zmq.ssh.tunnel_connection(socket_sub, "tcp://127.0.0.1:5555", "allen")
-        else:
-            publisher.connect("tcp://127.0.0.1:5556")
-            socket_sub.connect("tcp://127.0.0.1:5555")
+        publisher.connect("tcp://127.0.0.1:5556")
+        socket_sub.connect("tcp://127.0.0.1:5555")
         socket_sub.setsockopt_string(zmq.SUBSCRIBE, "")
 
         socket_evaluator = context.socket(zmq.PUB)
@@ -943,7 +940,7 @@ def game_loop(args):
         # while os.path.exists("./videos/output"+str(video)+".avi"):
         #     video+=1
         # fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        # world.video = cv2.VideoWriter("./videos/output"+str(video)+".avi", fourcc, 15, (args.width, args.height+128))
+        # world.video = cv2.VideoWriter("./videos/output"+str(video)+".avi", fourcc, 15, (args.width, args.height+256))
         # world.recording_enabled=True
         while True:
             if args.sync:
@@ -954,11 +951,12 @@ def game_loop(args):
                 return
             
             if not wait_response:
+                request_time=world.hud.simulation_time
                 if not world.tick(clock,publisher,control):
                     return
 
             #Receive the control action from the network, non-blocking
-            socks = dict(poller.poll(timeout=10))  # Timeout in milliseconds
+            socks = dict(poller.poll(timeout=700))  # Timeout in milliseconds
             if socket_sub in socks and socks[socket_sub] == zmq.POLLIN:
                 if(args.architecture=="aurova"):
                     message = json.loads(socket_sub.recv())
@@ -984,24 +982,25 @@ def game_loop(args):
                 waypoints = message["waypoints"]
                 wait_response=False
             else:
+                wait_response=True
                 #"Emergency stop" if it does not received a meesage in timeout
-                if (world.hud.simulation_time-previous_time)*1000>args.timeout:
-                    control.throttle, control.steer, control.brake =0, 0, 0.1
+                if (world.hud.simulation_time-request_time)*1000>args.timeout:
+                    target_speed, target_steer=0.0, 0.0
+                    info=[0.0,0.0]
                     #Sometimes throw an exception about it is not register some how.
                     poller.unregister(socket_sub)
                     socket_sub.close()
                     socket_sub = context.socket(zmq.SUB)
-                    socket_sub.connect("tcp://*:5555")
+                    socket_sub.connect("tcp://127.0.0.1:5555")
                     socket_sub.setsockopt_string(zmq.SUBSCRIBE, '')
                     poller.register(socket_sub, zmq.POLLIN)
                     wait_response=False
-                    previous_time=world.hud.simulation_time
-                wait_response=True
+                
 
             if args.architecture=="aurova":
                 closest_distance=check_near_collision(world.depth_camera._raw,target_speed<0)*1000.0
                 if closest_distance<NEAR_COLLISION_DISTANCE2:
-                    if not safe_stop and abs(target_speed)<0.01:
+                    if not safe_stop and abs(target_speed)>0.01:
                         socket_evaluator.send_string("Safety stop",zmq.NOBLOCK)
                         safe_stop=True
                     target_speed=0.0
@@ -1119,10 +1118,6 @@ def main():
         metavar='P',
         default=500,
         help='timeout waiting response from neural network server')
-    argparser.add_argument(
-        '--remote',
-        action='store_true',
-        help='Connect with the remote server.')
     argparser.add_argument(
         '-r', '--reverse',
         action='store_true',

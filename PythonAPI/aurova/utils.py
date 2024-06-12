@@ -10,6 +10,8 @@ from carla import ColorConverter as cc
 import math
 import cv2
 import re
+import open3d as o3d
+
 
 def ReadRouteFromXML(filename, id_way=None):
     tree= ET.parse(filename)
@@ -492,12 +494,27 @@ class LidarSensor (object):
         lidar_img[tuple(lidar_data.T)] = (255, 255, 255)
         surface = pygame.surfarray.make_surface(lidar_img)
         display.blit(surface, (0, 0))
+
+    # def voxelize(self, voxel_size=0.25):
+    #     points = self._pointcloud[:,:3]
+    #     pcd = o3d.geometry.PointCloud()
+    #     pcd.points = o3d.utility.Vector3dVector(points)
+    #     voxel_grid=o3d.geometry.VoxelGrid.create_from_point_cloud(pcd,voxel_size)
+
+    #     # Extract the voxel centroids
+    #     voxel_centroids = np.asarray([voxel.grid_index for voxel in voxel_grid.get_voxels()])
+
+    #     # Convert the voxel centroids to the original coordinates
+    #     voxel_centroids = voxel_centroids * voxel_size + voxel_grid.origin
+    #     self._pointcloud=voxel_centroids
     
     @staticmethod
     def _Lidar_callback(weak_self, lidar_data):
         self = weak_self()
         self._pointcloud = np.frombuffer(lidar_data.raw_data, dtype=np.dtype('f4'))
         self._pointcloud = np.reshape(self._pointcloud, (int(self._pointcloud.shape[0] / 4), 4))
+        # self.voxelize()
+        
 
 class LidarSensorLink (object):
     def __init__(self, sensor):

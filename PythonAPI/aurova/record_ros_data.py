@@ -83,7 +83,6 @@ class Recorder(CompatibleNode):
             self.ackermann_command_updated,
             qos_profile=10
         )
-
         try:
             self.route,_ = ReadRouteFromXML(ROUTE_FILENAME,WAY_ID)
             self.way_id=0

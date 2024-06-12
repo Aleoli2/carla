@@ -242,7 +242,7 @@ class Evaluator(object):
             print("End of the route. Finishing experiment.")
             self.statistics['route_completion']=1.0
         else:
-            self.statistics['route_completion']=completed_route_distance/route_length
+            self.statistics['route_completion']=max(completed_route_distance/route_length,0.0)
         self.statistics["infraction_penalty"]=self.infraction_score
         self.statistics["driving_score"]=self.statistics['route_completion']*self.statistics['infraction_penalty']
         self.statistics["driving_time"]=self.get_time()-self.start_experiment_time
@@ -263,7 +263,8 @@ class Evaluator(object):
             self.pedestrian_traj[id]["pose"]=pose
             self.pedestrian_traj[id]["speed"]=speed
             self.pedestrian_traj[id]["time"]=self.get_time()
-            self.pedestrian_traj[id]["min_score"]=1.0
+            #Save here Pi, PI² and (PI-0.5)*2
+            self.pedestrian_traj[id]["min_score"]=np.array([1.0, 1.0, 1.0])
 
     def pedestrian_traj_eval(self,id, pose):
         distance = math.sqrt((pose.x-self.pedestrian_traj[id]["pose"].x)**2 + 
@@ -271,22 +272,21 @@ class Evaluator(object):
         optimal_time=distance/self.pedestrian_traj[id]["speed"]
         real_time=self.get_time()-self.pedestrian_traj[id]["time"]
         score=optimal_time/real_time
-        if score<self.pedestrian_traj[id]["min_score"]:
-            self.pedestrian_traj[id]["min_score"]=score
+        if score<self.pedestrian_traj[id]["min_score"][0]:
+            self.pedestrian_traj[id]["min_score"]=np.array([score, score**2, max((score-0.5)*2,0.0)])
     
     #If collision, we consider that the pedestrian could not reach its objective and the minimum score was 0.
     def get_pedestrian_traj_metric(self):
-        self.statistics["pedestrian_metric_mean"]=0
-        self.statistics["pedestrian_metric_min"]=1.0 if self.statistics["pedestrian"]==0 else 0
+        self.statistics["pedestrian_metric_mean"]=np.array([0.0,0.0,0.0])
         count=0 #Check the real number, some trajectories can be active
         for id  in self.pedestrian_traj.keys():
-            if self.pedestrian_traj[id]["min_score"]<1.0:
+            if self.pedestrian_traj[id]["min_score"][0]<1.0:
                 self.statistics["pedestrian_metric_mean"]+=self.pedestrian_traj[id]["min_score"]
                 count+=1
-                if self.pedestrian_traj[id]["min_score"]<self.statistics["pedestrian_metric_min"]:
-                    self.statistics["pedestrian_metric_min"]=self.pedestrian_traj[id]["min_score"]
-        if count>0: self.statistics["pedestrian_metric_mean"]/=(count+self.statistics["pedestrian"])
-        else: self.statistics["pedestrian_metric_mean"]=1.0 if self.statistics["pedestrian"]==0 else 0
+        if count>0: 
+            self.statistics["pedestrian_metric_mean"]/=(count+self.statistics["pedestrian"])
+            self.statistics["pedestrian_metric_mean"]=self.statistics["pedestrian_metric_mean"].tolist()
+        else: self.statistics["pedestrian_metric_mean"]=[1.0,1.0,1.0] if self.statistics["pedestrian"]==0 else [0,0,0]
 
     def init_robot_traj(self, id, pedestrian_pose, pedestrian_pose2=None):
         if pedestrian_pose2 is None: pedestrian_pose2=pedestrian_pose #For apparitions
@@ -320,9 +320,10 @@ class Evaluator(object):
                 self.robot_traj[id]["target"]=target
                 self.robot_traj[id]["active"]=True
                 self.robot_traj[id]["count"]=0
-                self.robot_traj[id]["score"]=0
+                self.robot_traj[id]["score"]=np.array([0.0,0.0,0.0,0.0,0.0,0.0])
 
     def robot_traj_eval(self):
+        # The scores save are RI, RI², (RI-0.5)*2, RI*~collision=RI', RI'², (RI'-0.5)*2
         robot_pose=self.player.get_location()
         for id in self.robot_traj.keys():
             if self.robot_traj[id]["active"]:
@@ -331,7 +332,9 @@ class Evaluator(object):
                     self.get_time()-self.robot_traj[id]["time"]>0:
                         self.robot_traj[id]["active"]=False
                         self.robot_traj[id]["count"]+=1
-                        self.robot_traj[id]["score"]+=self.robot_traj[id]["minimum_time"]/(self.get_time()-self.robot_traj[id]["time"])
+                        RI=self.robot_traj[id]["minimum_time"]/(self.get_time()-self.robot_traj[id]["time"])
+                        RI2= 0.0 if id in self.collided_pedestrians else RI
+                        self.robot_traj[id]["score"]+=np.array([RI,RI**2,max((RI-0.5)*2,0),RI2,RI2**2,max((RI2-0.5)*2,0.0)])
 
     
     def get_robot_traj_metric(self):
@@ -341,8 +344,10 @@ class Evaluator(object):
             if self.robot_traj[id]["count"]>0:
                 self.statistics["robot_traj_metric"]+=self.robot_traj[id]["score"]/self.robot_traj[id]["count"]
                 count+=1
-        if count>0: self.statistics["robot_traj_metric"]/=count
-        else: self.statistics["robot_traj_metric"]=1.0
+        if count>0: 
+            self.statistics["robot_traj_metric"]/=count
+            self.statistics["robot_traj_metric"]=self.statistics["robot_traj_metric"].tolist()
+        else: self.statistics["robot_traj_metric"]=[0.0,0.0,0.0,0.0,0.0,0.0]
 
     
     def is_intersection(self, actor):
