@@ -17,18 +17,18 @@ function handle_interrupt {
     exit 1
 }
 
-full_evaluation=false
-start_test=3
+full_evaluation=true
+start_test=0
 wait_launch=14
 wait=5
-output=transfuser
-architecture=transfuser
+output=NVP
+architecture=ROS
 pedestrian_routes_prefix=routes/pedestrian_routes/
 export CARLA_RESULTS_PATH="/media/alolivas/MSI_500/carla_limpio/carla/PythonAPI/aurova/results_simple/"
 
 #Town01
 export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town01.xml"
-export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town01.osm"
+export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town01.osm"
 export LAT_ZERO="38.38164422311365"
 export LON_ZERO="-0.5255029920793286"
 
@@ -47,7 +47,7 @@ fi
 
 # Town02
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town02.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town02.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town02.osm"
 # export LAT_ZERO="38.3799",
 # export LON_ZERO="0.0",
 
@@ -57,15 +57,15 @@ fi
 #   close_loop=("1 2" "3" "1" "4 3" "6 5" "1 0" "4" "2" "3 4" "1 2" "5 6")
 #   weather=(6 1 1 2 2 6 2 6 1 0 6)
 # else
-#   way_id=(1 2 4 5 6 7 8 9 11)
-#   pedestrian_routes=(Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation2.xml Town02_evaluation2.xml)
-#   close_loop=("1 2" "3" "4 3" "6 5" "1 0" "4" "2" "3 4" "5 6")
-#   weather=(6 1 2 2 6 2 6 1 6)
+#   way_id=(1 2 4 6 7 8 9 11)
+#   pedestrian_routes=(Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation1.xml Town02_evaluation2.xml Town02_evaluation2.xml)
+#   close_loop=("1 2" "3" "4 3" "1 0" "4" "2" "3 4" "5 6")
+#   weather=(6 1 2 6 2 6 1 6)
 # fi
 
 #Town03
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town03.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town03.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town03.osm"
 # export LAT_ZERO="38.3811"
 # export LON_ZERO="0.001"
 
@@ -76,12 +76,12 @@ fi
 # fi
 # way_id=(-1)
 # pedestrian_routes=(Town03_evaluation1.xml)
-# closed_loop=("5 4 3 2 1 0")
+# close_loop=("5 4 3 2 1 0")
 # weather=(6)
 
 #Town04
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town04.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town04.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town04.osm"
 # export LAT_ZERO="38.3839"
 # export LON_ZERO="0.001"
 
@@ -99,7 +99,7 @@ fi
 
 #Town05
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town05.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town05.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town05.osm"
 # export LAT_ZERO="38.381"
 # export LON_ZERO="0.0"
 
@@ -126,7 +126,7 @@ do
     if [ "$architecture" = "ROS" ]; then
         export CLOSE_LOOP_ROS="${close_loop[$i]}"
 
-        roslaunch app_old nav_carla.launch &
+        roslaunch app_MTAP nav_carla.launch &
         pid1=$!
 
         sleep $wait_launch
@@ -172,5 +172,5 @@ pose:
     wait
   
 done
-wmctrl -a aurova_carla
+wmctrl -a carla/PythonAPI/aurova
 

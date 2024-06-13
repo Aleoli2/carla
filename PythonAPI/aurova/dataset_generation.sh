@@ -26,7 +26,7 @@ pedestrian_routes_prefix=routes/pedestrian_routes/
 
 #Town01
 export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town01.xml"
-export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town01.osm"
+export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town01.osm"
 export LAT_ZERO="38.38164422311365"
 export LON_ZERO="-0.5255029920793286"
 
@@ -45,7 +45,7 @@ output_val=${output_dir}/val/Town01_session
 
 #Town03
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town03.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town03.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town03.osm"
 # export LAT_ZERO="38.3811"
 # export LON_ZERO="0.001"
 
@@ -64,7 +64,7 @@ output_val=${output_dir}/val/Town01_session
 
 #Town04
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town04.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town04.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town04.osm"
 # export LAT_ZERO="38.3839"
 # export LON_ZERO="0.001"
 
@@ -83,7 +83,7 @@ output_val=${output_dir}/val/Town01_session
 
 #Town05
 # export CARLA_MAP="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/routes/Town05.xml"
-# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_old/paths/Town05.osm"
+# export OSM_ROS="/home/alolivas/aurova-lab/aurova_ws/src/applications/app_MTAP/paths/Town05.osm"
 # export LAT_ZERO="38.381"
 # export LON_ZERO="0.0"
 
@@ -109,7 +109,7 @@ do
 
   echo "Train way ${way_id_train[$i]}"
   #Spawn robot with ROS
-  roslaunch app_old nav_carla_prediction.launch &> /dev/null & 
+  roslaunch app_MTAP nav_carla_prediction.launch &> /dev/null & 
   pid1=$!
 
   sleep $wait_launch
@@ -161,7 +161,7 @@ do
 
   echo "Train way ${way_id_val[$i]}"
   #Spawn robot with ROS
-  roslaunch app_old nav_carla_prediction.launch &
+  roslaunch app_MTAP nav_carla_prediction.launch &
   pid1=$!
 
   sleep $wait_launch

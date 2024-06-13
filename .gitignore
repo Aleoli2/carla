@@ -48,3 +48,7 @@ core
 profiler.csv
 
 PythonAPI/aurova/results*
+PythonAPI/aurova/make_csv_results.py
+PythonAPI/aurova/generate_pedestrians.py
+PythonAPI/aurova/show_point_cloud.py
+PythonAPI/aurova/video_ros.py

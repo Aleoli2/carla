@@ -4,11 +4,11 @@ import os
 PATH_DATASET = os.getenv("PATH_DATASET")
 if PATH_DATASET is None: PATH_DATASET = "/home/alolivas/aurova-lab/labrobotica/dataset/CARLA_dataset/Town05_experiment2_session"
 ROUTE_FILENAME = os.getenv("CARLA_MAP")
-if ROUTE_FILENAME is None: ROUTE_FILENAME = "./routes/Town02.xml" 
+if ROUTE_FILENAME is None: ROUTE_FILENAME = "./routes/Town03.xml" 
 PEDESTRIANS_ROUTES_FILE = os.getenv("PEDESTRIAN_ROUTES")
-if PEDESTRIANS_ROUTES_FILE is None: PEDESTRIANS_ROUTES_FILE="routes/pedestrian_routes/Town02_evaluation1.xml"
+if PEDESTRIANS_ROUTES_FILE is None: PEDESTRIANS_ROUTES_FILE="routes/pedestrian_routes/Town03_evaluation1.xml"
 WAY_ID = int(os.getenv("CARLA_WAY"))
-if WAY_ID is None: WAY_ID = 1 #None first way. The robot starts in the first node of the way.
+if WAY_ID is None: WAY_ID = -1 #None first way. The robot starts in the first node of the way.
 PATH_RESULTS = os.getenv("CARLA_RESULTS_PATH")
 if PATH_RESULTS is None: PATH_RESULTS ="/media/alolivas/MSI_500/aurova_carla/carla/PythonAPI/aurova/results_metrics/"
 
